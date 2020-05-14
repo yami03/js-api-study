@@ -1,7 +1,14 @@
-# Start development
+# JS API Study
 
-- `npm test` Run unit test (Jest)
-- `npm start` Run storybook test (Storybook)
+테스트 코드를 통해 MDN의 예시들을 실행해본다. 
+
+## Start
+
+```shell
+# Run unit test (Jest)
+`npm test`
+```
+
 
 # Source Import Sample
 
@@ -19,27 +26,3 @@ describe('Sample', () => {
 });
 
 ```
-
-<!-- importend -->
-
-<!-- import src/**/*.test.{js,jsx,ts,tsx} --title-tag h3 -->
-<!-- importend -->
-
-## Storybook
-<!-- import src/**/*.stories.{js,jsx,ts,tsx} --title-tag h3 -->
-
-### src/components/Sample.stories.tsx
-
-
-```tsx
-import { storiesOf } from '@storybook/react';
-import React from 'react';
-import { Sample } from './Sample';
-
-storiesOf('Sample', module)
-  .add('text=Hello?', () => <Sample text="Hello?" />)
-  .add('text=World?', () => <Sample text="World?" />);
-
-```
-
-<!-- importend -->
