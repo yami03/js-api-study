@@ -1,3 +1,6 @@
+/* eslint-disable no-extra-label */
+/* eslint-disable no-unused-labels */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 describe('continue', () => {
   // break문과 달리 continue는 루프의 실행의 완전히 종료하지 않고,
   // for, while문에서 다음과 같이 동작한다.
@@ -42,7 +45,7 @@ describe('continue', () => {
         console.log('j: ' + j);
         j -= 1;
 
-        if (j % 2 == 0) continue checkj;
+        if (j % 2 === 0) continue checkj;
         console.log(j + ' is odd.');
       }
       console.log('i = ' + i);

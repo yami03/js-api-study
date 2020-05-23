@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 describe('block', () => {
   // block은 0개이상 구문을 묶을 때 사용한다.
   // block은 한쌍의 중괄호{}로 구성하여 선택적으로 label을 붙일 수 있다. label 문서 참조
@@ -5,25 +6,25 @@ describe('block', () => {
   // 자바스크립트가 여러개의 문을 하나의 문으로 묶는데 사용된다.
   // 반대 개념은 공백문이 있다. 하나의 문을 기대하는데 아무것도 제공하지 않는 걸 말한다.
   it('non-strict code일 때 var로 선언한 변수는 블록범위를 가지지 않는다.', () => {
-    var x = 1;
+    var x: number = 1;
     {
-      var x = 2;
+      var x: number = 2;
     }
     expect(x).toEqual(2);
   });
 
   it('let으로 선언한 식별자는 블록범위를 가진다.', () => {
-    let x = 1;
+    let x: number = 1;
     {
-      let x = 2;
+      let x: number = 2;
     }
     expect(x).toEqual(1);
   });
 
   it('const로 선언한 식별자는 블록범위를 가진다. SyntaxError: Identifier "c" has already been declared를 던지지 않는다.', () => {
-    const x = 1;
+    const x: number = 1;
     {
-      const x = 2;
+      const x: number = 2;
     }
     expect(x).toEqual(1);
   });
