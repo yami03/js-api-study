@@ -91,4 +91,83 @@ describe('switch', () => {
     expect(switchFn('Pig')).toEqual("This animal will go on Noah's Ark.");
     expect(switchFn('Dinosaur')).toEqual('Dinosaur');
   });
+
+  it('Multi-case : chained operations', () => {
+    // 결과들이 합쳐져 다양한 출력문이 나온다. + break문을 사용하지 않음
+    function switchFn(foo: number) {
+      var output: string = 'Output: ';
+      switch (foo) {
+        case 0:
+          output += 'So ';
+        case 1:
+          output += 'What ';
+          output += 'Is ';
+        case 2:
+          output += 'Your ';
+        case 3:
+          output += 'Name';
+        case 4:
+          output += '?';
+          return output;
+        case 5:
+          output += '!';
+          return output;
+        default:
+          return 'Please pick a number from 0 to 5!';
+      }
+    }
+    // foo는 NaN이거나 1,2,3,4,5,0이 아닐떄
+    expect(switchFn(6)).toEqual('Please pick a number from 0 to 5!');
+    expect(switchFn(0)).toEqual('Output: So What Is Your Name?');
+    expect(switchFn(1)).toEqual('Output: What Is Your Name?');
+    expect(switchFn(2)).toEqual('Output: Your Name?');
+    expect(switchFn(3)).toEqual('Output: Name?');
+    expect(switchFn(4)).toEqual('Output: ?');
+    expect(switchFn(5)).toEqual('Output: !');
+  });
+
+  it('return이나 break를 넣어서 해결한다.', () => {
+    // 결과들이 합쳐져 다양한 출력문이 나온다. + break문을 사용하지 않음
+    function switchFn(foo: number) {
+      var output: string = 'Output: ';
+      switch (foo) {
+        case 0: {
+          output += 'So ';
+          return output;
+        }
+        case 1: {
+          output += 'What ';
+          output += 'Is ';
+          return output;
+        }
+        case 2: {
+          output += 'Your ';
+          return output;
+        }
+        case 3: {
+          output += 'Name';
+          return output;
+        }
+        case 4: {
+          output += '?';
+          return output;
+        }
+        case 5: {
+          output += '!';
+          return output;
+        }
+        default: {
+          return 'Please pick a number from 0 to 5!';
+        }
+      }
+    }
+    // foo는 NaN이거나 1,2,3,4,5,0이 아닐떄
+    expect(switchFn(6)).toEqual('Please pick a number from 0 to 5!');
+    expect(switchFn(0)).toEqual('Output: So ');
+    expect(switchFn(1)).toEqual('Output: What Is ');
+    expect(switchFn(2)).toEqual('Output: Your ');
+    expect(switchFn(3)).toEqual('Output: Name');
+    expect(switchFn(4)).toEqual('Output: ?');
+    expect(switchFn(5)).toEqual('Output: !');
+  });
 });
