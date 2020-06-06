@@ -31,18 +31,17 @@ describe('throw', () => {
     }
   });
 
-  it('객체에서 예외를 발생시키는 다른 예', () => {
+  xit('객체에서 예외를 발생시키는 다른 예', () => {
     // 미국 우편번호인지 여부를 테스트한다.
     // 우편번호가 잘못된 형식을 사용했을 경우
     // throw문세어 ZipCodeFormatException형식의 객체를 생성하고 예외를 발생시킨다.
-
     // ZipCode constructor에서 전달된 인수가 이 패턴들 중 어느것에도 일치하지 않는다면
     // 예외가 발생한다.
-
-    function ZipCode(zip: number | string) {
+    /*function ZipCode(zip: number | string) {
       var newZip: string = String(zip);
       var pattern: RegExp = /[0-9]{5}([- ]?[0-9]{4})?/;
       if (pattern.test(newZip)) {
+        // TODO: 해결하지 못한 부분
         //this.value = newZip.match(pattern)[0];
         this.valueOf = function () {
           return this.value;
@@ -54,5 +53,27 @@ describe('throw', () => {
         // throw new ZipCodeFormatException(zip);
       }
     }
+
+    */
+  });
+
+  it('예외를 다시 발생시키기', () => {
+    // throw를 사용하여 예외를 잡은 후에 예외를 다시 던질 수 있다.
+    // 숫자 값으로 예외를 잡고 값이 50이상이면 예외를 다시 throw한다.
+    // 반환된 예외는 둘러싸는 함수 또는 최상위 수준으로 전파되어 사용자가 볼 수 있다?
+    function throwTest(n: number | string) {
+      try {
+        if (typeof n === 'number') throw n; // 숫자로 예외를 잡는다.
+      } catch (e) {
+        if (e <= 50) return '50이하면 예외를 처리한다.';
+        // 그렇지 않다면 다시 예외를 발생시킨다.
+        throw e;
+      }
+
+      return 'string';
+    }
+
+    expect(throwTest(48)).toEqual('50이하면 예외를 처리한다.');
+    expect(() => throwTest(51)).toThrowError('51');
   });
 });
