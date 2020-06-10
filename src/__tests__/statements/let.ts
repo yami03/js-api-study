@@ -116,6 +116,7 @@ describe('let', () => {
   });
 
   xit('lexical scoping으로 인해 가장 가까이 선언된 변수를 참조하려고 한다', () => {
+    // "어디서 호출하는지가 아니라 처음 선언되었을 때에 어떤 스코프에 있는지"가 중요
     var foo: number = 33;
     if (true) {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
