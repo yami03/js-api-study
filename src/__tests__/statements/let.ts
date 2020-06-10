@@ -81,5 +81,84 @@ describe('let', () => {
     // expect(thing.showPublic()).toEqual('foo');
   });
 
-  it('같은 변수를 같은 함수나 블록 범위 내에서 재선언하면 SyntaxError가 발생한다.', () => {});
+  xit('같은 변수를 같은 함수나 블록 범위 내에서 재선언하면 SyntaxError가 발생한다.', () => {
+    let foo: undefined;
+    // let foo: undefined; Cannot redeclare block-scoped variable 'foo'
+  });
+
+  it('switch문에선 블록이 하나이기 때문에 중복 선언을 피하기 위해 case마다 블록으로 감싸야한다', () => {
+    let x: number = 1;
+
+    switch (x) {
+      case 0: {
+        let foo: undefined;
+        break;
+      }
+      case 1: {
+        let foo: undefined;
+        break;
+      }
+    }
+  });
+
+  it('초기화(선언)되기 전에 같은 블록내에서 참조할 경우 ReferenceError가 발생한다.', () => {
+    // temporal dead zone: 블록 시작 부분부터 선언이 실행되기 전까지
+    expect(() => foo).toThrow(ReferenceError);
+
+    let foo: number = 2;
+  });
+
+  it('temporal dead zone에서 typeof를 사용하면 ReferenceError가 발생한다', () => {
+    // expect(typeof undeclaredVariable).toEqual(undefined);
+
+    expect(() => typeof i).toThrow(ReferenceError);
+    let i: number = 10;
+  });
+
+  xit('lexical scoping으로 인해 가장 가까이 선언된 변수를 참조하려고 한다', () => {
+    var foo: number = 33;
+    if (true) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
+      expect(() => {
+        // 여기서 (foo + 55)가 참조하는것은lexical scoping으로 인하여 let으로 선언된 foo이다.
+        // 하지만 초기화가 완료되기 전에 참조하였기 때문에 ReferenceError가 된다.
+        // temporal dead zone에 해당된다.
+        // let foo: number = foo + 55;
+      }).toThrow(ReferenceError);
+    }
+  });
+
+  xit('lexical scoping과 temporal dead zone에 유의하쟈..', () => {
+    function go(n: { a: number[] }) {
+      console.log(n);
+
+      /* expect(() => {
+      // lexical scoping으로 인하여 n.a는 바로 앞에 있는 n을 참고 하려고 하고
+      // n은 아직 초기화가 종료되지 않았기 때문에 temporal dead zone에 해당된다.
+        for (let n of n.a) {
+          console.log(n);
+        }
+      }).toThrow(ReferenceError); */
+    }
+
+    go({ a: [1, 2, 3] });
+  });
+
+  it('let의 유효 범위는 블록이다.', () => {
+    // var의 유효 범위는 함수 내 또는 전역을 유효 범위로 가진다.
+    var a: number = 1;
+    var b: number = 2;
+
+    if (a === 1) {
+      var a: number = 11; // 전역에 있는 a의 값이 바뀐다.
+      let b: number = 22; // if 내 블록 변수
+
+      expect(a).toEqual(11);
+      expect(b).toEqual(22);
+    }
+
+    expect(a).toEqual(11);
+    expect(b).toEqual(2);
+  });
 });
