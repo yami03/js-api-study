@@ -74,4 +74,106 @@ describe('function*', () => {
 
     expect(gen.next().done).toBeTruthy();
   });
+
+  it('return은 generator를 종료시킨다. 값이 반환되면 generator 객체의 value가 된다.', () => {
+    function* yieldAndReturn() {
+      yield 'Y';
+      return 'R';
+      // eslint-disable-next-line no-unreachable
+      yield 'unreachable';
+    }
+    var genGenerator: Generator<'Y' | 'unreachable', string, unknown> = yieldAndReturn();
+    expect(genGenerator.next()).toEqual({ value: 'Y', done: false });
+    expect(genGenerator.next()).toEqual({ value: 'R', done: true }); // return후 종료되었다.
+    expect(genGenerator.next()).toEqual({ value: undefined, done: true });
+  });
+
+  it('generator는 object의 property가 될 수 있다.', () => {
+    const someObj: { generator(): Generator<'a' | 'b', void, unknown> } = {
+      *generator() {
+        yield 'a';
+        yield 'b';
+      },
+    };
+    const gen: Generator<'a' | 'b', void, unknown> = someObj.generator();
+    expect(gen.next()).toEqual({ value: 'a', done: false });
+    expect(gen.next()).toEqual({ value: 'b', done: false });
+    expect(gen.next()).toEqual({ value: undefined, done: true });
+  });
+
+  it('generator는 object method가 될 수 있다.', () => {
+    class Foo {
+      *generator() {
+        yield 1;
+        yield 2;
+        yield 3;
+      }
+    }
+
+    const f: Foo = new Foo();
+    const gen: Generator<1 | 2 | 3, void, unknown> = f.generator();
+
+    expect(gen.next()).toEqual({ value: 1, done: false });
+    expect(gen.next()).toEqual({ value: 2, done: false });
+    expect(gen.next()).toEqual({ value: 3, done: false });
+    expect(gen.next()).toEqual({ value: undefined, done: true });
+  });
+
+  it('계산된 속성에 generator', () => {
+    class Foo {
+      *[Symbol.iterator]() {
+        yield 1;
+        yield 2;
+      }
+    }
+
+    const SomeObj: {
+      [Symbol.iterator](): Generator<'a' | 'b', void, unknown>;
+    } = {
+      *[Symbol.iterator]() {
+        yield 'a';
+        yield 'b';
+      },
+    };
+
+    expect(Array.from(new Foo())).toEqual([1, 2]);
+    expect(Array.from(SomeObj)).toEqual(['a', 'b']);
+  });
+
+  it('generator는 생성자 함수가 될 수 없당', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    function* f() {}
+    // eslint-disable-next-line @typescript-eslint/typedef
+    // expect(() => { var obj = new f }).toThrow(toThrow);
+  });
+
+  it('함수 표현식으로 정의하기', () => {
+    const foo: () => Generator<10 | 20, void, unknown> = function* () {
+      yield 10;
+      yield 20;
+    };
+
+    const bar: Generator<10 | 20, void, unknown> = foo();
+
+    expect(bar.next()).toEqual({ value: 10, done: false });
+  });
+
+  it('generator 예제', () => {
+    const array: number[] = [];
+    function* powers(n: number): Generator<number, void, unknown> {
+      // 끝이 없는 generate 루프
+      for (let current: number = n; ; current *= n) {
+        yield current;
+      }
+    }
+
+    for (let power of powers(2)) {
+      // 🤔let에 바로 value가 꽂히넹..
+      // generator 컨트롤
+      if (power > 32) break;
+      array.push(power);
+    }
+
+    expect(array).toEqual([2, 4, 8, 16, 32]);
+  });
 });
