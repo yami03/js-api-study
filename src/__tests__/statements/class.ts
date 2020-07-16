@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-useless-constructor */
+/* eslint-disable @typescript-eslint/typedef */
 describe('class 선언문', () => {
   it('class선언은 프로토타입 기반 상속을 사용하여, 주어진 이름의 새로운 클래스를 만든다.', () => {
     class Polygon {
@@ -48,20 +50,46 @@ describe('class 선언문', () => {
 
 describe('class 표현식', () => {
   it('class식의 경우 클래스명("binding identifier")을 생략 할 수 있다.', () => {
-    // eslint-disable-next-line @typescript-eslint/typedef
     const Foo = class {
-      // eslint-disable-next-line @typescript-eslint/no-useless-constructor
       constructor() {}
       bar(): string {
         return 'Hello World!';
       }
     };
 
-    // eslint-disable-next-line @typescript-eslint/typedef
     const instance = new Foo();
     instance.bar();
 
     expect(instance.bar()).toEqual('Hello World!');
     expect(Foo.name).toEqual('Foo');
+  });
+
+  it('SyntaxError없이 재선언을 할 수 있다.', () => {
+    expect(() => {
+      let Foo = class {};
+      Foo = class {};
+      expect(typeof Foo).toEqual('function');
+      expect(typeof class {}).toEqual('function');
+      expect(Foo).toBeInstanceOf(Object);
+      expect(Foo).toBeInstanceOf(Function);
+
+      // 함수 선언문은 재선언할 수 없다.
+      expect(class Foo {}).toThrowError(TypeError);
+    }).not.toThrow();
+  });
+
+  it('class 내부에서 현재 클래스를 참조하기', () => {
+    // named class expression 만들기
+    const Foo = class NamedFoo {
+      constructor() {}
+      whoIsThere() {
+        return NamedFoo.name;
+      }
+    };
+
+    const bar = new Foo();
+    expect(bar.whoIsThere()).toEqual('NamedFoo');
+    // expect(() => NamedFoo.name).toThrowError(ReferenceError);
+    expect(Foo.name).toEqual('NamedFoo');
   });
 });
